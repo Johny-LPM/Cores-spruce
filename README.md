@@ -29,7 +29,3 @@ These cores are shipped by spruceOS but can't be built from libretro-super and n
 - [ ] **fake08** — not in libretro-super
 - [ ] **mkxp-z** — hyphen in name breaks libretro-super's bash variable parsing
 - [ ] **mupen64plus** — removed from libretro-super (replaced by mupen64plus_next)
-- [ ] **km_duckswanstation_xtreme_amped** — Knulli Mod, custom build
-- [ ] **km_flycast_xtreme** — Knulli Mod, custom build
-- [ ] **km_ludicrousn64_2k22_xtreme_amped** — Knulli Mod, custom build
-- [ ] **km_parallel_n64_xtreme_amped_turbo** — Knulli Mod, custom build
