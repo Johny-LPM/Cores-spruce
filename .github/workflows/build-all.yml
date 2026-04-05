@@ -5,10 +5,15 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
-  batch_1:
-    uses: ./.github/workflows/build-all-1.yml
-
-  batch_2:
-    uses: ./.github/workflows/build-all-2.yml
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger both batches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run build-all-1.yml --repo ${{ github.repository }}
+          gh workflow run build-all-2.yml --repo ${{ github.repository }}
