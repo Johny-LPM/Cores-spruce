@@ -34,6 +34,9 @@ jobs:
               --notes "Core builds from ${{ github.ref_name }}" \
             || true
 
+      - name: Install zig
+        uses: mlugg/setup-zig@v2
+
       - name: Install Rust toolchain and targets
         run: |
           rustup target add aarch64-unknown-linux-gnu armv7-unknown-linux-gnueabihf
