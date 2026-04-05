@@ -19,6 +19,7 @@ RUN dpkg --add-architecture arm64 && \
     cmake \
     zlib1g-dev:arm64 \
     libgl-dev:arm64 \
+    libgles2-mesa-dev:arm64 \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone libretro-super build system
