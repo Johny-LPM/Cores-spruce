@@ -51,7 +51,7 @@ jobs:
           mkdir -p output/cores64
           docker run --rm -v ${{ github.workspace }}/output:/output cores-arm64 \
             bash -c '
-              git clone --depth 1 https://github.com/jtothebell/fake-08.git
+              git clone --depth 1 --recurse-submodules https://github.com/jtothebell/fake-08.git
               cd fake-08
               REF="${{ inputs.core_ref }}"
               [ -n "$REF" ] && git fetch origin && git checkout "$REF"
@@ -64,7 +64,7 @@ jobs:
           mkdir -p output/cores
           docker run --rm -v ${{ github.workspace }}/output:/output cores-armhf \
             bash -c '
-              git clone --depth 1 https://github.com/jtothebell/fake-08.git
+              git clone --depth 1 --recurse-submodules https://github.com/jtothebell/fake-08.git
               cd fake-08
               REF="${{ inputs.core_ref }}"
               [ -n "$REF" ] && git fetch origin && git checkout "$REF"
