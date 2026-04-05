@@ -1,17 +1,14 @@
-# TODO: Determine glibc floor across Mini and A30 devices.
-# A30 sysroot has glibc 2.23. If Mini is similar, we may need a custom
-# toolchain with an older sysroot instead of Ubuntu's stock arm-linux-gnueabihf.
-#
-# Placeholder — using Ubuntu 20.04 (glibc 2.31) for now.
+# Ubuntu 16.04 (Xenial) — glibc 2.23, matches A30 floor.
+# GCC 5.4 is older but sufficient for most libretro cores.
 
-FROM ubuntu:20.04
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN dpkg --add-architecture armhf && \
     sed -i 's/^deb http/deb [arch=amd64] http/g' /etc/apt/sources.list && \
-    echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" >> /etc/apt/sources.list && \
-    echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports xenial main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports xenial-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -21,6 +18,7 @@ RUN dpkg --add-architecture armhf && \
     git \
     ca-certificates \
     zip \
+    zlib1g-dev:armhf \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone libretro-super build system
