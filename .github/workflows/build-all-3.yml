@@ -14,11 +14,5 @@ jobs:
   core_km_duckswanstation_xtreme_amped:
     uses: ./.github/workflows/build-km_duckswanstation_xtreme_amped.yml
 
-  core_km_flycast_xtreme:
-    uses: ./.github/workflows/build-km_flycast_xtreme.yml
-
-  core_km_ludicrousn64_2k22_xtreme_amped:
-    uses: ./.github/workflows/build-km_ludicrousn64_2k22_xtreme_amped.yml
-
   core_km_parallel_n64_xtreme_amped_turbo:
     uses: ./.github/workflows/build-km_parallel_n64_xtreme_amped_turbo.yml

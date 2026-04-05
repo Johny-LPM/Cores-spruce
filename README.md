@@ -29,3 +29,5 @@ These cores are shipped by spruceOS but can't be built from libretro-super and n
 - [ ] **fake08** — not in libretro-super
 - [ ] **mkxp-z** — hyphen in name breaks libretro-super's bash variable parsing
 - [ ] **mupen64plus** — removed from libretro-super (replaced by mupen64plus_next)
+- [ ] **km_flycast_xtreme** — KMFDManic/morpheuscast_xtreme fork uses bare `as` for ARM64 assembly, not cross-compile friendly
+- [ ] **km_ludicrousn64_2k22_xtreme_amped** — KMFDManic fork has broken aarch64 dynarec source and missing includes
