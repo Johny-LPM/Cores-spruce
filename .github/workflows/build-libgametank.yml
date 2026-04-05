@@ -51,19 +51,19 @@ jobs:
         run: |
           mkdir -p output/cores64
           cd gametank-sdk/tools/gte/libretro
-          cargo zigbuild --target aarch64-unknown-linux-gnu.2.23 --release
-          cp ../../../target/aarch64-unknown-linux-gnu/release/libgametank_libretro.so \
-            ${{ github.workspace }}/output/cores64/libgametank_libretro.so
-        || echo "::warning::arm64 build failed for libgametank"
+          cargo zigbuild --target aarch64-unknown-linux-gnu.2.23 --release \
+            && cp ../../../target/aarch64-unknown-linux-gnu/release/libgametank_libretro.so \
+              ${{ github.workspace }}/output/cores64/libgametank_libretro.so \
+            || echo "::warning::arm64 build failed for libgametank"
 
       - name: Build armhf
         run: |
           mkdir -p output/cores
           cd gametank-sdk/tools/gte/libretro
-          cargo zigbuild --target armv7-unknown-linux-gnueabihf.2.23 --release
-          cp ../../../target/armv7-unknown-linux-gnueabihf/release/libgametank_libretro.so \
-            ${{ github.workspace }}/output/cores/libgametank_libretro.so
-        || echo "::warning::armhf build failed for libgametank"
+          cargo zigbuild --target armv7-unknown-linux-gnueabihf.2.23 --release \
+            && cp ../../../target/armv7-unknown-linux-gnueabihf/release/libgametank_libretro.so \
+              ${{ github.workspace }}/output/cores/libgametank_libretro.so \
+            || echo "::warning::armhf build failed for libgametank"
 
       - name: Package and upload
         env:
