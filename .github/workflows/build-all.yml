@@ -1,0 +1,16 @@
+name: Build All Cores
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Add core workflows here as they're created, e.g.:
+#
+# jobs:
+#   snes9x:
+#     uses: ./.github/workflows/build-snes9x.yml
+#
+#   gambatte:
+#     uses: ./.github/workflows/build-gambatte.yml
