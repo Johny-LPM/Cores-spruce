@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh tic80
               cp dist/unix/tic80_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for tic80"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh tic80
               cp dist/unix/tic80_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for tic80"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r tic80_libretro.zip cores/ cores64/ tic80_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" tic80_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/tic80_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/tic80_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f tic80_libretro.info ] && CONTENTS="$CONTENTS tic80_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r tic80_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" tic80_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for tic80"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh vecx
               cp dist/unix/vecx_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for vecx"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh vecx
               cp dist/unix/vecx_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for vecx"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r vecx_libretro.zip cores/ cores64/ vecx_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" vecx_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/vecx_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/vecx_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f vecx_libretro.info ] && CONTENTS="$CONTENTS vecx_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r vecx_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" vecx_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for vecx"
+            exit 1
+          fi

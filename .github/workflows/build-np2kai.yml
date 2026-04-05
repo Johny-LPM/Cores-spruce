@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh np2kai
               cp dist/unix/np2kai_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for np2kai"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh np2kai
               cp dist/unix/np2kai_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for np2kai"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r np2kai_libretro.zip cores/ cores64/ np2kai_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" np2kai_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/np2kai_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/np2kai_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f np2kai_libretro.info ] && CONTENTS="$CONTENTS np2kai_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r np2kai_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" np2kai_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for np2kai"
+            exit 1
+          fi

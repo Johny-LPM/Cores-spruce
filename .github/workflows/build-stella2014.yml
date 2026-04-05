@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh stella2014
               cp dist/unix/stella2014_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for stella2014"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh stella2014
               cp dist/unix/stella2014_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for stella2014"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r stella2014_libretro.zip cores/ cores64/ stella2014_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" stella2014_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/stella2014_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/stella2014_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f stella2014_libretro.info ] && CONTENTS="$CONTENTS stella2014_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r stella2014_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" stella2014_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for stella2014"
+            exit 1
+          fi

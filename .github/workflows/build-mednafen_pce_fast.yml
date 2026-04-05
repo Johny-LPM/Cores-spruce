@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh mednafen_pce_fast
               cp dist/unix/mednafen_pce_fast_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for mednafen_pce_fast"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh mednafen_pce_fast
               cp dist/unix/mednafen_pce_fast_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for mednafen_pce_fast"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r mednafen_pce_fast_libretro.zip cores/ cores64/ mednafen_pce_fast_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" mednafen_pce_fast_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/mednafen_pce_fast_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/mednafen_pce_fast_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f mednafen_pce_fast_libretro.info ] && CONTENTS="$CONTENTS mednafen_pce_fast_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r mednafen_pce_fast_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" mednafen_pce_fast_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for mednafen_pce_fast"
+            exit 1
+          fi

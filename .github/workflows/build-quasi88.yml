@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh quasi88
               cp dist/unix/quasi88_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for quasi88"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh quasi88
               cp dist/unix/quasi88_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for quasi88"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r quasi88_libretro.zip cores/ cores64/ quasi88_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" quasi88_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/quasi88_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/quasi88_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f quasi88_libretro.info ] && CONTENTS="$CONTENTS quasi88_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r quasi88_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" quasi88_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for quasi88"
+            exit 1
+          fi

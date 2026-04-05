@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh hatari
               cp dist/unix/hatari_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for hatari"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh hatari
               cp dist/unix/hatari_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for hatari"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r hatari_libretro.zip cores/ cores64/ hatari_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" hatari_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/hatari_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/hatari_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f hatari_libretro.info ] && CONTENTS="$CONTENTS hatari_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r hatari_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" hatari_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for hatari"
+            exit 1
+          fi

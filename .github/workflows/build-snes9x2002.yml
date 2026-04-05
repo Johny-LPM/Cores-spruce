@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh snes9x2002
               cp dist/unix/snes9x2002_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for snes9x2002"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh snes9x2002
               cp dist/unix/snes9x2002_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for snes9x2002"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r snes9x2002_libretro.zip cores/ cores64/ snes9x2002_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" snes9x2002_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/snes9x2002_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/snes9x2002_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f snes9x2002_libretro.info ] && CONTENTS="$CONTENTS snes9x2002_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r snes9x2002_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" snes9x2002_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for snes9x2002"
+            exit 1
+          fi

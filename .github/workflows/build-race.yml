@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh race
               cp dist/unix/race_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for race"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh race
               cp dist/unix/race_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for race"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r race_libretro.zip cores/ cores64/ race_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" race_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/race_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/race_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f race_libretro.info ] && CONTENTS="$CONTENTS race_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r race_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" race_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for race"
+            exit 1
+          fi

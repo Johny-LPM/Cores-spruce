@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh ardens
               cp dist/unix/ardens_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for ardens"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh ardens
               cp dist/unix/ardens_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for ardens"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r ardens_libretro.zip cores/ cores64/ ardens_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" ardens_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/ardens_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/ardens_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f ardens_libretro.info ] && CONTENTS="$CONTENTS ardens_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r ardens_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" ardens_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for ardens"
+            exit 1
+          fi

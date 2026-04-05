@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh arduous
               cp dist/unix/arduous_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for arduous"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh arduous
               cp dist/unix/arduous_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for arduous"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r arduous_libretro.zip cores/ cores64/ arduous_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" arduous_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/arduous_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/arduous_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f arduous_libretro.info ] && CONTENTS="$CONTENTS arduous_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r arduous_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" arduous_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for arduous"
+            exit 1
+          fi

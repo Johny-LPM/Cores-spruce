@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh chailove
               cp dist/unix/chailove_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for chailove"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh chailove
               cp dist/unix/chailove_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for chailove"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r chailove_libretro.zip cores/ cores64/ chailove_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" chailove_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/chailove_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/chailove_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f chailove_libretro.info ] && CONTENTS="$CONTENTS chailove_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r chailove_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" chailove_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for chailove"
+            exit 1
+          fi

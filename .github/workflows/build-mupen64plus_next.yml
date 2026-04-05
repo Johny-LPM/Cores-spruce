@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh mupen64plus_next
               cp dist/unix/mupen64plus_next_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for mupen64plus_next"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh mupen64plus_next
               cp dist/unix/mupen64plus_next_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for mupen64plus_next"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r mupen64plus_next_libretro.zip cores/ cores64/ mupen64plus_next_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" mupen64plus_next_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/mupen64plus_next_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/mupen64plus_next_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f mupen64plus_next_libretro.info ] && CONTENTS="$CONTENTS mupen64plus_next_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r mupen64plus_next_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" mupen64plus_next_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for mupen64plus_next"
+            exit 1
+          fi

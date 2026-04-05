@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh reminiscence
               cp dist/unix/reminiscence_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for reminiscence"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh reminiscence
               cp dist/unix/reminiscence_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for reminiscence"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r reminiscence_libretro.zip cores/ cores64/ reminiscence_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" reminiscence_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/reminiscence_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/reminiscence_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f reminiscence_libretro.info ] && CONTENTS="$CONTENTS reminiscence_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r reminiscence_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" reminiscence_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for reminiscence"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh opera
               cp dist/unix/opera_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for opera"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh opera
               cp dist/unix/opera_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for opera"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r opera_libretro.zip cores/ cores64/ opera_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" opera_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/opera_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/opera_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f opera_libretro.info ] && CONTENTS="$CONTENTS opera_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r opera_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" opera_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for opera"
+            exit 1
+          fi

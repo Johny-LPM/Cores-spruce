@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh frodo
               cp dist/unix/frodo_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for frodo"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh frodo
               cp dist/unix/frodo_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for frodo"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r frodo_libretro.zip cores/ cores64/ frodo_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" frodo_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/frodo_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/frodo_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f frodo_libretro.info ] && CONTENTS="$CONTENTS frodo_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r frodo_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" frodo_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for frodo"
+            exit 1
+          fi

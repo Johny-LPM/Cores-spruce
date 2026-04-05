@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh 81
               cp dist/unix/81_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for 81"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh 81
               cp dist/unix/81_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for 81"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r 81_libretro.zip cores/ cores64/ 81_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" 81_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/81_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/81_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f 81_libretro.info ] && CONTENTS="$CONTENTS 81_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r 81_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" 81_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for 81"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh numero
               cp dist/unix/numero_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for numero"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh numero
               cp dist/unix/numero_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for numero"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r numero_libretro.zip cores/ cores64/ numero_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" numero_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/numero_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/numero_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f numero_libretro.info ] && CONTENTS="$CONTENTS numero_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r numero_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" numero_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for numero"
+            exit 1
+          fi

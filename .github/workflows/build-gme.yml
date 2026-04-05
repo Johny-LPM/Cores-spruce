@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh gme
               cp dist/unix/gme_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for gme"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh gme
               cp dist/unix/gme_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for gme"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r gme_libretro.zip cores/ cores64/ gme_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" gme_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/gme_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/gme_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f gme_libretro.info ] && CONTENTS="$CONTENTS gme_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r gme_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" gme_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for gme"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh tyrquake
               cp dist/unix/tyrquake_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for tyrquake"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh tyrquake
               cp dist/unix/tyrquake_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for tyrquake"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r tyrquake_libretro.zip cores/ cores64/ tyrquake_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" tyrquake_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/tyrquake_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/tyrquake_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f tyrquake_libretro.info ] && CONTENTS="$CONTENTS tyrquake_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r tyrquake_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" tyrquake_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for tyrquake"
+            exit 1
+          fi

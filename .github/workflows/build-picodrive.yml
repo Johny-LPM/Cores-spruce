@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh picodrive
               cp dist/unix/picodrive_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for picodrive"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh picodrive
               cp dist/unix/picodrive_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for picodrive"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r picodrive_libretro.zip cores/ cores64/ picodrive_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" picodrive_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/picodrive_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/picodrive_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f picodrive_libretro.info ] && CONTENTS="$CONTENTS picodrive_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r picodrive_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" picodrive_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for picodrive"
+            exit 1
+          fi

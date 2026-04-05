@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh squirreljme
               cp dist/unix/squirreljme_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for squirreljme"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh squirreljme
               cp dist/unix/squirreljme_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for squirreljme"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r squirreljme_libretro.zip cores/ cores64/ squirreljme_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" squirreljme_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/squirreljme_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/squirreljme_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f squirreljme_libretro.info ] && CONTENTS="$CONTENTS squirreljme_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r squirreljme_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" squirreljme_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for squirreljme"
+            exit 1
+          fi

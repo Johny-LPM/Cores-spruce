@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh o2em
               cp dist/unix/o2em_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for o2em"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh o2em
               cp dist/unix/o2em_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for o2em"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r o2em_libretro.zip cores/ cores64/ o2em_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" o2em_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/o2em_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/o2em_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f o2em_libretro.info ] && CONTENTS="$CONTENTS o2em_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r o2em_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" o2em_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for o2em"
+            exit 1
+          fi

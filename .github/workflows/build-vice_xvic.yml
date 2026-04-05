@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh vice_xvic
               cp dist/unix/vice_xvic_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for vice_xvic"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh vice_xvic
               cp dist/unix/vice_xvic_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for vice_xvic"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r vice_xvic_libretro.zip cores/ cores64/ vice_xvic_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" vice_xvic_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/vice_xvic_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/vice_xvic_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f vice_xvic_libretro.info ] && CONTENTS="$CONTENTS vice_xvic_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r vice_xvic_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" vice_xvic_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for vice_xvic"
+            exit 1
+          fi

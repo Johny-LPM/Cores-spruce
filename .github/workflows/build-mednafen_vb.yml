@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh mednafen_vb
               cp dist/unix/mednafen_vb_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for mednafen_vb"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh mednafen_vb
               cp dist/unix/mednafen_vb_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for mednafen_vb"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r mednafen_vb_libretro.zip cores/ cores64/ mednafen_vb_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" mednafen_vb_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/mednafen_vb_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/mednafen_vb_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f mednafen_vb_libretro.info ] && CONTENTS="$CONTENTS mednafen_vb_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r mednafen_vb_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" mednafen_vb_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for mednafen_vb"
+            exit 1
+          fi

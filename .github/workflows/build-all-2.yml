@@ -14,14 +14,8 @@ jobs:
   core_mgba:
     uses: ./.github/workflows/build-mgba.yml
 
-  core_mkxp_z:
-    uses: ./.github/workflows/build-mkxp-z.yml
-
   core_mu:
     uses: ./.github/workflows/build-mu.yml
-
-  core_mupen64plus:
-    uses: ./.github/workflows/build-mupen64plus.yml
 
   core_mupen64plus_next:
     uses: ./.github/workflows/build-mupen64plus_next.yml

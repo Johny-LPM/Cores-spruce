@@ -56,9 +56,6 @@ jobs:
   core_ecwolf:
     uses: ./.github/workflows/build-ecwolf.yml
 
-  core_fake08:
-    uses: ./.github/workflows/build-fake08.yml
-
   core_fbalpha2012:
     uses: ./.github/workflows/build-fbalpha2012.yml
 
@@ -121,9 +118,6 @@ jobs:
 
   core_hatari:
     uses: ./.github/workflows/build-hatari.yml
-
-  core_libgametank:
-    uses: ./.github/workflows/build-libgametank.yml
 
   core_lowresnx:
     uses: ./.github/workflows/build-lowresnx.yml

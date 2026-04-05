@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh atari800
               cp dist/unix/atari800_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for atari800"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh atari800
               cp dist/unix/atari800_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for atari800"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r atari800_libretro.zip cores/ cores64/ atari800_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" atari800_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/atari800_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/atari800_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f atari800_libretro.info ] && CONTENTS="$CONTENTS atari800_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r atari800_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" atari800_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for atari800"
+            exit 1
+          fi

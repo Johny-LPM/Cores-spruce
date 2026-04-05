@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh swanstation
               cp dist/unix/swanstation_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for swanstation"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh swanstation
               cp dist/unix/swanstation_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for swanstation"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r swanstation_libretro.zip cores/ cores64/ swanstation_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" swanstation_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/swanstation_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/swanstation_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f swanstation_libretro.info ] && CONTENTS="$CONTENTS swanstation_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r swanstation_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" swanstation_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for swanstation"
+            exit 1
+          fi

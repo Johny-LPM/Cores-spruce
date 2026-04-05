@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh freechaf
               cp dist/unix/freechaf_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for freechaf"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh freechaf
               cp dist/unix/freechaf_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for freechaf"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r freechaf_libretro.zip cores/ cores64/ freechaf_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" freechaf_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/freechaf_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/freechaf_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f freechaf_libretro.info ] && CONTENTS="$CONTENTS freechaf_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r freechaf_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" freechaf_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for freechaf"
+            exit 1
+          fi

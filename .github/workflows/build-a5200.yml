@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh a5200
               cp dist/unix/a5200_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for a5200"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh a5200
               cp dist/unix/a5200_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for a5200"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r a5200_libretro.zip cores/ cores64/ a5200_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" a5200_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/a5200_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/a5200_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f a5200_libretro.info ] && CONTENTS="$CONTENTS a5200_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r a5200_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" a5200_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for a5200"
+            exit 1
+          fi

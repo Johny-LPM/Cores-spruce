@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh fbalpha2012
               cp dist/unix/fbalpha2012_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for fbalpha2012"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh fbalpha2012
               cp dist/unix/fbalpha2012_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for fbalpha2012"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r fbalpha2012_libretro.zip cores/ cores64/ fbalpha2012_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" fbalpha2012_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/fbalpha2012_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/fbalpha2012_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f fbalpha2012_libretro.info ] && CONTENTS="$CONTENTS fbalpha2012_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r fbalpha2012_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" fbalpha2012_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for fbalpha2012"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh parallel_n64
               cp dist/unix/parallel_n64_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for parallel_n64"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh parallel_n64
               cp dist/unix/parallel_n64_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for parallel_n64"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r parallel_n64_libretro.zip cores/ cores64/ parallel_n64_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" parallel_n64_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/parallel_n64_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/parallel_n64_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f parallel_n64_libretro.info ] && CONTENTS="$CONTENTS parallel_n64_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r parallel_n64_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" parallel_n64_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for parallel_n64"
+            exit 1
+          fi

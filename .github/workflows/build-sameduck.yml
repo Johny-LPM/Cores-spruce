@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh sameduck
               cp dist/unix/sameduck_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for sameduck"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh sameduck
               cp dist/unix/sameduck_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for sameduck"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r sameduck_libretro.zip cores/ cores64/ sameduck_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" sameduck_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/sameduck_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/sameduck_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f sameduck_libretro.info ] && CONTENTS="$CONTENTS sameduck_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r sameduck_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" sameduck_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for sameduck"
+            exit 1
+          fi

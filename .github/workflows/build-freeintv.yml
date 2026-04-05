@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh freeintv
               cp dist/unix/freeintv_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for freeintv"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh freeintv
               cp dist/unix/freeintv_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for freeintv"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r freeintv_libretro.zip cores/ cores64/ freeintv_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" freeintv_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/freeintv_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/freeintv_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f freeintv_libretro.info ] && CONTENTS="$CONTENTS freeintv_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r freeintv_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" freeintv_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for freeintv"
+            exit 1
+          fi

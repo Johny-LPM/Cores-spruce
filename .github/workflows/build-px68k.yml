@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh px68k
               cp dist/unix/px68k_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for px68k"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh px68k
               cp dist/unix/px68k_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for px68k"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r px68k_libretro.zip cores/ cores64/ px68k_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" px68k_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/px68k_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/px68k_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f px68k_libretro.info ] && CONTENTS="$CONTENTS px68k_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r px68k_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" px68k_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for px68k"
+            exit 1
+          fi

@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh yabasanshiro
               cp dist/unix/yabasanshiro_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for yabasanshiro"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh yabasanshiro
               cp dist/unix/yabasanshiro_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for yabasanshiro"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r yabasanshiro_libretro.zip cores/ cores64/ yabasanshiro_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" yabasanshiro_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/yabasanshiro_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/yabasanshiro_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f yabasanshiro_libretro.info ] && CONTENTS="$CONTENTS yabasanshiro_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r yabasanshiro_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" yabasanshiro_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for yabasanshiro"
+            exit 1
+          fi

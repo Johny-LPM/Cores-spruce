@@ -58,7 +58,7 @@ jobs:
               fi
               ./libretro-build.sh genesis_plus_gx
               cp dist/unix/genesis_plus_gx_libretro.so /output/cores64/
-            '
+            ' || echo "::warning::arm64 build failed for genesis_plus_gx"
 
       - name: Build armhf
         run: |
@@ -72,7 +72,7 @@ jobs:
               fi
               ./libretro-build.sh genesis_plus_gx
               cp dist/unix/genesis_plus_gx_libretro.so /output/cores/
-            '
+            ' || echo "::warning::armhf build failed for genesis_plus_gx"
 
       - name: Grab info file
         run: |
@@ -84,5 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd output
-          zip -r genesis_plus_gx_libretro.zip cores/ cores64/ genesis_plus_gx_libretro.info
-          gh release upload "beta-${{ github.ref_name }}" genesis_plus_gx_libretro.zip --clobber
+          CONTENTS=""
+          [ -f cores64/genesis_plus_gx_libretro.so ] && CONTENTS="$CONTENTS cores64/"
+          [ -f cores/genesis_plus_gx_libretro.so ] && CONTENTS="$CONTENTS cores/"
+          [ -f genesis_plus_gx_libretro.info ] && CONTENTS="$CONTENTS genesis_plus_gx_libretro.info"
+          if [ -n "$CONTENTS" ]; then
+            zip -r genesis_plus_gx_libretro.zip $CONTENTS
+            gh release upload "beta-${{ github.ref_name }}" genesis_plus_gx_libretro.zip --clobber
+          else
+            echo "::error::No builds succeeded for genesis_plus_gx"
+            exit 1
+          fi

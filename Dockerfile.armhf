@@ -13,6 +13,7 @@ RUN apt-get update && \
     ca-certificates \
     wget \
     zip \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
 # Install A30 buildroot toolchain (downloaded from toolchains release at build time)
