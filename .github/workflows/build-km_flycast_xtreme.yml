@@ -55,7 +55,7 @@ jobs:
               cd morpheuscast_xtreme
               REF="${{ inputs.core_ref }}"
               [ -n "$REF" ] && git fetch origin && git checkout "$REF"
-              make platform=unix CC=${HOST_CC}-gcc CXX=${HOST_CC}-g++ -j$(nproc)
+              make platform=arm64 ARCH=aarch64 CC=${HOST_CC}-gcc CXX=${HOST_CC}-g++ MAKEFLAGS= -j$(nproc)
               find . -name "*_libretro.so" -exec cp {} /output/cores64/km_flycast_xtreme_libretro.so \;
             ' || echo "::warning::arm64 build failed for km_flycast_xtreme"
 
@@ -68,7 +68,7 @@ jobs:
               cd morpheuscast_xtreme
               REF="${{ inputs.core_ref }}"
               [ -n "$REF" ] && git fetch origin && git checkout "$REF"
-              make platform=unix CC=${HOST_CC}-gcc CXX=${HOST_CC}-g++ -j$(nproc)
+              make platform=unix ARCH=arm CC=${HOST_CC}-gcc CXX=${HOST_CC}-g++ MAKEFLAGS= -j$(nproc)
               find . -name "*_libretro.so" -exec cp {} /output/cores/km_flycast_xtreme_libretro.so \;
             ' || echo "::warning::armhf build failed for km_flycast_xtreme"
 
