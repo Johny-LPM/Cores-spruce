@@ -15,6 +15,12 @@ RUN dpkg --add-architecture arm64 && \
     pkg-config \
     git \
     ca-certificates \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
+# Clone libretro-super build system
+RUN git clone --depth 1 https://github.com/libretro/libretro-super.git /libretro-super
+
+ENV HOST_CC=aarch64-linux-gnu
+
+WORKDIR /libretro-super

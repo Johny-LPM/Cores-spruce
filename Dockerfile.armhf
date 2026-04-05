@@ -20,6 +20,12 @@ RUN dpkg --add-architecture armhf && \
     pkg-config \
     git \
     ca-certificates \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
+# Clone libretro-super build system
+RUN git clone --depth 1 https://github.com/libretro/libretro-super.git /libretro-super
+
+ENV HOST_CC=arm-linux-gnueabihf
+
+WORKDIR /libretro-super
