@@ -27,7 +27,6 @@ Build bot for libretro cores targeting spruceOS handheld devices. Builds 32-bit 
 These cores are shipped by spruceOS but can't be built from libretro-super and need custom build processes:
 
 - [ ] **fake08** — not in libretro-super
-- [ ] **libgametank** — not in libretro-super
 - [ ] **mkxp-z** — hyphen in name breaks libretro-super's bash variable parsing
 - [ ] **mupen64plus** — removed from libretro-super (replaced by mupen64plus_next)
 - [ ] **km_duckswanstation_xtreme_amped** — Knulli Mod, custom build

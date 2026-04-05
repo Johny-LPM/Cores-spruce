@@ -11,9 +11,10 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger both batches
+      - name: Trigger all batches
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh workflow run build-all-1.yml --repo ${{ github.repository }}
           gh workflow run build-all-2.yml --repo ${{ github.repository }}
+          gh workflow run build-all-3.yml --repo ${{ github.repository }}
