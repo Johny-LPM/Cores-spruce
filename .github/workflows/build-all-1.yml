@@ -1,0 +1,157 @@
+name: Build All Cores (1/2)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  core_2048:
+    uses: ./.github/workflows/build-2048.yml
+
+  core_81:
+    uses: ./.github/workflows/build-81.yml
+
+  core_a5200:
+    uses: ./.github/workflows/build-a5200.yml
+
+  core_ardens:
+    uses: ./.github/workflows/build-ardens.yml
+
+  core_arduous:
+    uses: ./.github/workflows/build-arduous.yml
+
+  core_atari800:
+    uses: ./.github/workflows/build-atari800.yml
+
+  core_bk:
+    uses: ./.github/workflows/build-bk.yml
+
+  core_bluemsx:
+    uses: ./.github/workflows/build-bluemsx.yml
+
+  core_cap32:
+    uses: ./.github/workflows/build-cap32.yml
+
+  core_chailove:
+    uses: ./.github/workflows/build-chailove.yml
+
+  core_chimerasnes:
+    uses: ./.github/workflows/build-chimerasnes.yml
+
+  core_crocods:
+    uses: ./.github/workflows/build-crocods.yml
+
+  core_daphne:
+    uses: ./.github/workflows/build-daphne.yml
+
+  core_dosbox_pure:
+    uses: ./.github/workflows/build-dosbox_pure.yml
+
+  core_easyrpg:
+    uses: ./.github/workflows/build-easyrpg.yml
+
+  core_ecwolf:
+    uses: ./.github/workflows/build-ecwolf.yml
+
+  core_fake08:
+    uses: ./.github/workflows/build-fake08.yml
+
+  core_fbalpha2012:
+    uses: ./.github/workflows/build-fbalpha2012.yml
+
+  core_fbneo:
+    uses: ./.github/workflows/build-fbneo.yml
+
+  core_fceumm:
+    uses: ./.github/workflows/build-fceumm.yml
+
+  core_ffmpeg:
+    uses: ./.github/workflows/build-ffmpeg.yml
+
+  core_flycast:
+    uses: ./.github/workflows/build-flycast.yml
+
+  core_fmsx:
+    uses: ./.github/workflows/build-fmsx.yml
+
+  core_freechaf:
+    uses: ./.github/workflows/build-freechaf.yml
+
+  core_freeintv:
+    uses: ./.github/workflows/build-freeintv.yml
+
+  core_frodo:
+    uses: ./.github/workflows/build-frodo.yml
+
+  core_fuse:
+    uses: ./.github/workflows/build-fuse.yml
+
+  core_gambatte:
+    uses: ./.github/workflows/build-gambatte.yml
+
+  core_gearboy:
+    uses: ./.github/workflows/build-gearboy.yml
+
+  core_gearcoleco:
+    uses: ./.github/workflows/build-gearcoleco.yml
+
+  core_gearsystem:
+    uses: ./.github/workflows/build-gearsystem.yml
+
+  core_genesis_plus_gx:
+    uses: ./.github/workflows/build-genesis_plus_gx.yml
+
+  core_genesis_plus_gx_wide:
+    uses: ./.github/workflows/build-genesis_plus_gx_wide.yml
+
+  core_gme:
+    uses: ./.github/workflows/build-gme.yml
+
+  core_gpsp:
+    uses: ./.github/workflows/build-gpsp.yml
+
+  core_gw:
+    uses: ./.github/workflows/build-gw.yml
+
+  core_handy:
+    uses: ./.github/workflows/build-handy.yml
+
+  core_hatari:
+    uses: ./.github/workflows/build-hatari.yml
+
+  core_libgametank:
+    uses: ./.github/workflows/build-libgametank.yml
+
+  core_lowresnx:
+    uses: ./.github/workflows/build-lowresnx.yml
+
+  core_lutro:
+    uses: ./.github/workflows/build-lutro.yml
+
+  core_mame2003_plus:
+    uses: ./.github/workflows/build-mame2003_plus.yml
+
+  core_mednafen_lynx:
+    uses: ./.github/workflows/build-mednafen_lynx.yml
+
+  core_mednafen_ngp:
+    uses: ./.github/workflows/build-mednafen_ngp.yml
+
+  core_mednafen_pce_fast:
+    uses: ./.github/workflows/build-mednafen_pce_fast.yml
+
+  core_mednafen_pcfx:
+    uses: ./.github/workflows/build-mednafen_pcfx.yml
+
+  core_mednafen_supafaust:
+    uses: ./.github/workflows/build-mednafen_supafaust.yml
+
+  core_mednafen_supergrafx:
+    uses: ./.github/workflows/build-mednafen_supergrafx.yml
+
+  core_mednafen_vb:
+    uses: ./.github/workflows/build-mednafen_vb.yml
+

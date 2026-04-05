@@ -1,0 +1,157 @@
+name: Build All Cores (2/2)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  core_mednafen_wswan:
+    uses: ./.github/workflows/build-mednafen_wswan.yml
+
+  core_mgba:
+    uses: ./.github/workflows/build-mgba.yml
+
+  core_mkxp_z:
+    uses: ./.github/workflows/build-mkxp-z.yml
+
+  core_mu:
+    uses: ./.github/workflows/build-mu.yml
+
+  core_mupen64plus:
+    uses: ./.github/workflows/build-mupen64plus.yml
+
+  core_mupen64plus_next:
+    uses: ./.github/workflows/build-mupen64plus_next.yml
+
+  core_neocd:
+    uses: ./.github/workflows/build-neocd.yml
+
+  core_nestopia:
+    uses: ./.github/workflows/build-nestopia.yml
+
+  core_np2kai:
+    uses: ./.github/workflows/build-np2kai.yml
+
+  core_numero:
+    uses: ./.github/workflows/build-numero.yml
+
+  core_o2em:
+    uses: ./.github/workflows/build-o2em.yml
+
+  core_opera:
+    uses: ./.github/workflows/build-opera.yml
+
+  core_parallel_n64:
+    uses: ./.github/workflows/build-parallel_n64.yml
+
+  core_pcsx_rearmed:
+    uses: ./.github/workflows/build-pcsx_rearmed.yml
+
+  core_picodrive:
+    uses: ./.github/workflows/build-picodrive.yml
+
+  core_pokemini:
+    uses: ./.github/workflows/build-pokemini.yml
+
+  core_potator:
+    uses: ./.github/workflows/build-potator.yml
+
+  core_prboom:
+    uses: ./.github/workflows/build-prboom.yml
+
+  core_prosystem:
+    uses: ./.github/workflows/build-prosystem.yml
+
+  core_puae2021:
+    uses: ./.github/workflows/build-puae2021.yml
+
+  core_puzzlescript:
+    uses: ./.github/workflows/build-puzzlescript.yml
+
+  core_px68k:
+    uses: ./.github/workflows/build-px68k.yml
+
+  core_quasi88:
+    uses: ./.github/workflows/build-quasi88.yml
+
+  core_quicknes:
+    uses: ./.github/workflows/build-quicknes.yml
+
+  core_race:
+    uses: ./.github/workflows/build-race.yml
+
+  core_reminiscence:
+    uses: ./.github/workflows/build-reminiscence.yml
+
+  core_retro8:
+    uses: ./.github/workflows/build-retro8.yml
+
+  core_sameduck:
+    uses: ./.github/workflows/build-sameduck.yml
+
+  core_snes9x:
+    uses: ./.github/workflows/build-snes9x.yml
+
+  core_snes9x2002:
+    uses: ./.github/workflows/build-snes9x2002.yml
+
+  core_snes9x2005:
+    uses: ./.github/workflows/build-snes9x2005.yml
+
+  core_snes9x2005_plus:
+    uses: ./.github/workflows/build-snes9x2005_plus.yml
+
+  core_snes9x2010:
+    uses: ./.github/workflows/build-snes9x2010.yml
+
+  core_squirreljme:
+    uses: ./.github/workflows/build-squirreljme.yml
+
+  core_stella2014:
+    uses: ./.github/workflows/build-stella2014.yml
+
+  core_swanstation:
+    uses: ./.github/workflows/build-swanstation.yml
+
+  core_tgbdual:
+    uses: ./.github/workflows/build-tgbdual.yml
+
+  core_theodore:
+    uses: ./.github/workflows/build-theodore.yml
+
+  core_tic80:
+    uses: ./.github/workflows/build-tic80.yml
+
+  core_tyrquake:
+    uses: ./.github/workflows/build-tyrquake.yml
+
+  core_uae4arm:
+    uses: ./.github/workflows/build-uae4arm.yml
+
+  core_uw8:
+    uses: ./.github/workflows/build-uw8.yml
+
+  core_uzem:
+    uses: ./.github/workflows/build-uzem.yml
+
+  core_vecx:
+    uses: ./.github/workflows/build-vecx.yml
+
+  core_vemulator:
+    uses: ./.github/workflows/build-vemulator.yml
+
+  core_vice_x64:
+    uses: ./.github/workflows/build-vice_x64.yml
+
+  core_vice_xvic:
+    uses: ./.github/workflows/build-vice_xvic.yml
+
+  core_x1:
+    uses: ./.github/workflows/build-x1.yml
+
+  core_yabasanshiro:
+    uses: ./.github/workflows/build-yabasanshiro.yml
+
