@@ -1,0 +1,88 @@
+name: Build tyrquake
+
+on:
+  workflow_dispatch:
+    inputs:
+      core_ref:
+        description: 'Core git ref (commit/tag/branch, blank for latest)'
+        default: ''
+  workflow_call:
+    inputs:
+      core_ref:
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure beta release exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="beta-${{ github.ref_name }}"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" \
+              --target "${{ github.ref_name }}" \
+              --title "Beta Build (${{ github.ref_name }})" \
+              --prerelease \
+              --notes "Core builds from ${{ github.ref_name }}" \
+            || true
+
+      - name: Download Docker images
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download toolchains --pattern "cores-arm64.tar.gz" --dir .
+          gh release download toolchains --pattern "cores-armhf.tar.gz" --dir .
+
+      - name: Load Docker images
+        run: |
+          gunzip -c cores-arm64.tar.gz | docker load
+          gunzip -c cores-armhf.tar.gz | docker load
+
+      - name: Build arm64
+        run: |
+          mkdir -p output/cores64
+          docker run --rm -v ${{ github.workspace }}/output:/output cores-arm64 \
+            bash -c '
+              ./libretro-fetch.sh tyrquake
+              REF="${{ inputs.core_ref }}"
+              if [ -n "$REF" ]; then
+                cd libretro-tyrquake && git fetch origin && git checkout "$REF" && cd ..
+              fi
+              ./libretro-build.sh tyrquake
+              cp dist/unix/tyrquake_libretro.so /output/cores64/
+            '
+
+      - name: Build armhf
+        run: |
+          mkdir -p output/cores
+          docker run --rm -v ${{ github.workspace }}/output:/output cores-armhf \
+            bash -c '
+              ./libretro-fetch.sh tyrquake
+              REF="${{ inputs.core_ref }}"
+              if [ -n "$REF" ]; then
+                cd libretro-tyrquake && git fetch origin && git checkout "$REF" && cd ..
+              fi
+              ./libretro-build.sh tyrquake
+              cp dist/unix/tyrquake_libretro.so /output/cores/
+            '
+
+      - name: Grab info file
+        run: |
+          docker run --rm -v ${{ github.workspace }}/output:/output cores-arm64 \
+            bash -c 'cp dist/info/tyrquake_libretro.info /output/ 2>/dev/null || true'
+
+      - name: Package and upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd output
+          zip -r tyrquake_libretro.zip cores/ cores64/ tyrquake_libretro.info
+          gh release upload "beta-${{ github.ref_name }}" tyrquake_libretro.zip --clobber

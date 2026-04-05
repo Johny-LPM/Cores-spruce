@@ -7,5 +7,297 @@ permissions:
   contents: write
 
 jobs:
+  2048:
+    uses: ./.github/workflows/build-2048.yml
+
+  81:
+    uses: ./.github/workflows/build-81.yml
+
+  a5200:
+    uses: ./.github/workflows/build-a5200.yml
+
+  ardens:
+    uses: ./.github/workflows/build-ardens.yml
+
+  arduous:
+    uses: ./.github/workflows/build-arduous.yml
+
+  atari800:
+    uses: ./.github/workflows/build-atari800.yml
+
+  bk:
+    uses: ./.github/workflows/build-bk.yml
+
+  bluemsx:
+    uses: ./.github/workflows/build-bluemsx.yml
+
+  cap32:
+    uses: ./.github/workflows/build-cap32.yml
+
+  chailove:
+    uses: ./.github/workflows/build-chailove.yml
+
+  chimerasnes:
+    uses: ./.github/workflows/build-chimerasnes.yml
+
+  crocods:
+    uses: ./.github/workflows/build-crocods.yml
+
+  daphne:
+    uses: ./.github/workflows/build-daphne.yml
+
+  dosbox_pure:
+    uses: ./.github/workflows/build-dosbox_pure.yml
+
+  easyrpg:
+    uses: ./.github/workflows/build-easyrpg.yml
+
+  ecwolf:
+    uses: ./.github/workflows/build-ecwolf.yml
+
+  fake08:
+    uses: ./.github/workflows/build-fake08.yml
+
+  fbalpha2012:
+    uses: ./.github/workflows/build-fbalpha2012.yml
+
+  fbneo:
+    uses: ./.github/workflows/build-fbneo.yml
+
+  fceumm:
+    uses: ./.github/workflows/build-fceumm.yml
+
+  ffmpeg:
+    uses: ./.github/workflows/build-ffmpeg.yml
+
+  flycast:
+    uses: ./.github/workflows/build-flycast.yml
+
+  fmsx:
+    uses: ./.github/workflows/build-fmsx.yml
+
+  freechaf:
+    uses: ./.github/workflows/build-freechaf.yml
+
+  freeintv:
+    uses: ./.github/workflows/build-freeintv.yml
+
+  frodo:
+    uses: ./.github/workflows/build-frodo.yml
+
+  fuse:
+    uses: ./.github/workflows/build-fuse.yml
+
+  gambatte:
+    uses: ./.github/workflows/build-gambatte.yml
+
+  gearboy:
+    uses: ./.github/workflows/build-gearboy.yml
+
+  gearcoleco:
+    uses: ./.github/workflows/build-gearcoleco.yml
+
+  gearsystem:
+    uses: ./.github/workflows/build-gearsystem.yml
+
+  genesis_plus_gx:
+    uses: ./.github/workflows/build-genesis_plus_gx.yml
+
+  genesis_plus_gx_wide:
+    uses: ./.github/workflows/build-genesis_plus_gx_wide.yml
+
+  gme:
+    uses: ./.github/workflows/build-gme.yml
+
+  gpsp:
+    uses: ./.github/workflows/build-gpsp.yml
+
+  gw:
+    uses: ./.github/workflows/build-gw.yml
+
+  handy:
+    uses: ./.github/workflows/build-handy.yml
+
+  hatari:
+    uses: ./.github/workflows/build-hatari.yml
+
+  libgametank:
+    uses: ./.github/workflows/build-libgametank.yml
+
+  lowresnx:
+    uses: ./.github/workflows/build-lowresnx.yml
+
+  lutro:
+    uses: ./.github/workflows/build-lutro.yml
+
+  mame2003_plus:
+    uses: ./.github/workflows/build-mame2003_plus.yml
+
+  mednafen_lynx:
+    uses: ./.github/workflows/build-mednafen_lynx.yml
+
+  mednafen_ngp:
+    uses: ./.github/workflows/build-mednafen_ngp.yml
+
+  mednafen_pce_fast:
+    uses: ./.github/workflows/build-mednafen_pce_fast.yml
+
+  mednafen_pcfx:
+    uses: ./.github/workflows/build-mednafen_pcfx.yml
+
+  mednafen_supafaust:
+    uses: ./.github/workflows/build-mednafen_supafaust.yml
+
+  mednafen_supergrafx:
+    uses: ./.github/workflows/build-mednafen_supergrafx.yml
+
+  mednafen_vb:
+    uses: ./.github/workflows/build-mednafen_vb.yml
+
+  mednafen_wswan:
+    uses: ./.github/workflows/build-mednafen_wswan.yml
+
+  mgba:
+    uses: ./.github/workflows/build-mgba.yml
+
+  mkxp_z:
+    uses: ./.github/workflows/build-mkxp-z.yml
+
+  mu:
+    uses: ./.github/workflows/build-mu.yml
+
+  mupen64plus:
+    uses: ./.github/workflows/build-mupen64plus.yml
+
+  mupen64plus_next:
+    uses: ./.github/workflows/build-mupen64plus_next.yml
+
+  neocd:
+    uses: ./.github/workflows/build-neocd.yml
+
+  nestopia:
+    uses: ./.github/workflows/build-nestopia.yml
+
+  np2kai:
+    uses: ./.github/workflows/build-np2kai.yml
+
+  numero:
+    uses: ./.github/workflows/build-numero.yml
+
+  o2em:
+    uses: ./.github/workflows/build-o2em.yml
+
+  opera:
+    uses: ./.github/workflows/build-opera.yml
+
+  parallel_n64:
+    uses: ./.github/workflows/build-parallel_n64.yml
+
+  pcsx_rearmed:
+    uses: ./.github/workflows/build-pcsx_rearmed.yml
+
+  picodrive:
+    uses: ./.github/workflows/build-picodrive.yml
+
+  pokemini:
+    uses: ./.github/workflows/build-pokemini.yml
+
+  potator:
+    uses: ./.github/workflows/build-potator.yml
+
+  prboom:
+    uses: ./.github/workflows/build-prboom.yml
+
+  prosystem:
+    uses: ./.github/workflows/build-prosystem.yml
+
+  puae2021:
+    uses: ./.github/workflows/build-puae2021.yml
+
+  puzzlescript:
+    uses: ./.github/workflows/build-puzzlescript.yml
+
+  px68k:
+    uses: ./.github/workflows/build-px68k.yml
+
+  quasi88:
+    uses: ./.github/workflows/build-quasi88.yml
+
+  quicknes:
+    uses: ./.github/workflows/build-quicknes.yml
+
+  race:
+    uses: ./.github/workflows/build-race.yml
+
+  reminiscence:
+    uses: ./.github/workflows/build-reminiscence.yml
+
+  retro8:
+    uses: ./.github/workflows/build-retro8.yml
+
+  sameduck:
+    uses: ./.github/workflows/build-sameduck.yml
+
   snes9x:
     uses: ./.github/workflows/build-snes9x.yml
+
+  snes9x2002:
+    uses: ./.github/workflows/build-snes9x2002.yml
+
+  snes9x2005:
+    uses: ./.github/workflows/build-snes9x2005.yml
+
+  snes9x2005_plus:
+    uses: ./.github/workflows/build-snes9x2005_plus.yml
+
+  snes9x2010:
+    uses: ./.github/workflows/build-snes9x2010.yml
+
+  squirreljme:
+    uses: ./.github/workflows/build-squirreljme.yml
+
+  stella2014:
+    uses: ./.github/workflows/build-stella2014.yml
+
+  swanstation:
+    uses: ./.github/workflows/build-swanstation.yml
+
+  tgbdual:
+    uses: ./.github/workflows/build-tgbdual.yml
+
+  theodore:
+    uses: ./.github/workflows/build-theodore.yml
+
+  tic80:
+    uses: ./.github/workflows/build-tic80.yml
+
+  tyrquake:
+    uses: ./.github/workflows/build-tyrquake.yml
+
+  uae4arm:
+    uses: ./.github/workflows/build-uae4arm.yml
+
+  uw8:
+    uses: ./.github/workflows/build-uw8.yml
+
+  uzem:
+    uses: ./.github/workflows/build-uzem.yml
+
+  vecx:
+    uses: ./.github/workflows/build-vecx.yml
+
+  vemulator:
+    uses: ./.github/workflows/build-vemulator.yml
+
+  vice_x64:
+    uses: ./.github/workflows/build-vice_x64.yml
+
+  vice_xvic:
+    uses: ./.github/workflows/build-vice_xvic.yml
+
+  x1:
+    uses: ./.github/workflows/build-x1.yml
+
+  yabasanshiro:
+    uses: ./.github/workflows/build-yabasanshiro.yml
+
