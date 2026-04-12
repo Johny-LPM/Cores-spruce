@@ -51,13 +51,15 @@ jobs:
           mkdir -p output/cores64
           docker run --rm -v ${{ github.workspace }}/output:/output cores-arm64 \
             bash -c '
-              ./libretro-fetch.sh gpsp
+              git clone --depth 1 https://github.com/libretro/gpsp.git /tmp/gpsp
               REF="${{ inputs.core_ref }}"
               if [ -n "$REF" ]; then
-                cd libretro-gpsp && git fetch origin && git checkout "$REF" && cd ..
+                cd /tmp/gpsp && git fetch --unshallow && git checkout "$REF"
               fi
-              ./libretro-build.sh gpsp
-              cp dist/unix/gpsp_libretro.so /output/cores64/
+              cd /tmp/gpsp
+              make -j$(nproc) platform=arm64 \
+                CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++
+              cp gpsp_libretro.so /output/cores64/
             ' || echo "::warning::arm64 build failed for gpsp"
 
       - name: Build armhf
@@ -65,13 +67,15 @@ jobs:
           mkdir -p output/cores
           docker run --rm -v ${{ github.workspace }}/output:/output cores-armhf \
             bash -c '
-              ./libretro-fetch.sh gpsp
+              git clone --depth 1 https://github.com/libretro/gpsp.git /tmp/gpsp
               REF="${{ inputs.core_ref }}"
               if [ -n "$REF" ]; then
-                cd libretro-gpsp && git fetch origin && git checkout "$REF" && cd ..
+                cd /tmp/gpsp && git fetch --unshallow && git checkout "$REF"
               fi
-              ./libretro-build.sh gpsp
-              cp dist/unix/gpsp_libretro.so /output/cores/
+              cd /tmp/gpsp
+              make -j$(nproc) platform=armv7hardfloat \
+                CC=arm-a30-linux-gnueabihf-gcc CXX=arm-a30-linux-gnueabihf-g++
+              cp gpsp_libretro.so /output/cores/
             ' || echo "::warning::armhf build failed for gpsp"
 
       - name: Grab info file
