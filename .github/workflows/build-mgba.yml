@@ -70,6 +70,11 @@ jobs:
               if [ -n "$REF" ]; then
                 cd libretro-mgba && git fetch origin && git checkout "$REF" && cd ..
               fi
+              export CFLAGS="-Ofast -flto -mcpu=cortex-a7 -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -flto -ffat-lto-objects -fomit-frame-pointer -ffunction-sections -fdata-sections -fuse-linker-plugin -s"
+              export CXXFLAGS="$CFLAGS"
+              export LDFLAGS="-flto -Wl,--gc-sections -Wl,--as-needed -Wl,--strip-all"
+              export platform="linux-armv7-neon"
+              export HAVE_OPENGL=0
               ./libretro-build.sh mgba
               cp dist/unix/mgba_libretro.so /output/cores/
             ' || echo "::warning::armhf build failed for mgba"
